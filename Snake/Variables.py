@@ -15,5 +15,9 @@ FPS = 60  # MAX FPS
 BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 RED = (200, 0, 0)
-GREEN = (0, 200, 0)
+GREEN = (0, 150, 0)
 GREEN_2 = (0, 255, 0)
+
+# Snake
+
+snake = []
