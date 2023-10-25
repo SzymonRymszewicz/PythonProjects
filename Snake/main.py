@@ -8,10 +8,16 @@ class Game:
     def __init__(self):
 
         self.RUN = True
-        snake.append(Snake())  # CREATES SNAKE
-        self.Apples = []
+        self.clock = FPS
+        self.apples_eaten = 0
 
-        for x in range(0, NUMBER_OF_APPLES, 1):
+        snake.append(Snake())  # CREATES SNAKE
+        snake.append(Snake.Tail(snake[0]))
+        snake.append(Snake.Tail(snake[1]))
+        snake.append(Snake.Tail(snake[2]))
+
+        self.Apples = []
+        for x in range(0, NUMBER_OF_APPLES, 1):  # CREATES APPLES
             self.Apples.append(Apple())
 
         while self.RUN:  # MAIN GAME LOOP
@@ -19,8 +25,12 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.RUN = False
 
-            self.logic()
-            self.draw()
+            if self.clock >= FPS:
+                self.logic()
+                self.draw()
+                self.clock = 0
+            else:
+                self.clock += int(FPS / 10)
 
             GAME_CLOCK.tick(FPS)
 
@@ -31,12 +41,16 @@ class Game:
         snake[0].logic()
 
         for parts in snake[1:]:
-            parts.logic(snake[snake.index(parts) - 1].direction)
+            parts.logic(snake[snake.index(parts) - 1])
+            if snake[0].pos_x == parts.pos_x and snake[0].pos_y == parts.pos_y:
+                self.RUN = False
+                print("GAME OVER WITH SCORE:", self.apples_eaten)
 
         for apple in self.Apples:
             if snake[0].pos_x == apple.pos_x and snake[0].pos_y == apple.pos_y:
                 snake.append(Snake.Tail(snake[len(snake) - 1]))
                 apple.change_position()
+                self.apples_eaten += 1
 
     def draw(self):  # DRAWS EVERYTHING THAT HAPPENS ONTO THE GAME WINDOW
 
